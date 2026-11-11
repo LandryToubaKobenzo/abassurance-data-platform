@@ -1,11 +1,6 @@
-
 name: AbAssurance - CI and Data Pipeline
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
@@ -13,16 +8,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Recuperer le repository
+      - name: Recuperer le code
         uses: actions/checkout@v4
 
-      - name: Installer Python
+      - name: Configurer Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Verifier Python
         run: python --version
+
+      - name: Premier test
+        run: echo "AbAssurance fonctionne"
 
       - name: Premier test
         run: echo "Pipeline AbAssurance operationnel"
