@@ -3,18 +3,32 @@ name: AbAssurance - CI and Data Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
+      - feature/sonarqube-integration
   pull_request:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
+permissions:
+  contents: read
+  
+env:
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  
 jobs:
   quality:
+    name: Python Quality and SonarQube
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -27,21 +41,30 @@ jobs:
           python -m pip install -e .
           python -m pip install pytest pytest-cov ruff
 
-      - name: Code quality
+      - name: Ruff code quality
         run: python -m ruff check src tests
 
       - name: Unit tests and coverage
         run: |
-          python -m pytest tests/test_validation.py -v \
-            --cov=abassurance.validation \
+          python -m pytest tests/ -v \
+            --cov=abassurance \
             --cov-report=term-missing \
             --cov-report=xml:coverage.xml \
             --cov-report=html:htmlcov
 
-      - name: Upload coverage
+      - name: Upload coverage report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: abassurance-coverage
           path: |
             coverage.xml
             htmlcov/
+          if-no-files-found: warn
+
+      - name: SonarQube Cloud Scan
+        if: ${{ env.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: false
