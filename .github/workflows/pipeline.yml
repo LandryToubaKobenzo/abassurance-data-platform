@@ -1,0 +1,47 @@
+
+name: AbAssurance - CI and Data Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install pytest pytest-cov ruff
+
+      - name: Code quality
+        run: python -m ruff check src tests
+
+      - name: Unit tests and coverage
+        run: |
+          python -m pytest tests/test_validation.py -v \
+            --cov=abassurance.validation \
+            --cov-report=term-missing \
+            --cov-report=xml:coverage.xml \
+            --cov-report=html:htmlcov
+
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: abassurance-coverage
+          path: |
+            coverage.xml
+            htmlcov/
