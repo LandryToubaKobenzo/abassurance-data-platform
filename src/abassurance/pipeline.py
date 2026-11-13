@@ -46,12 +46,16 @@ def executer_pipeline(fichier_ab, fichier_ap, fichier_sortie):
     if not isinstance(clients_ab, list) or not isinstance(clients_ap, list):
         raise TypeError("Les fichiers sources doivent contenir des listes JSON.")
 
-    resultat = unifier_clients(clients_ab, clients_ap)
+    
 
-    sortie = Path(fichier_sortie)
-    sortie.parent.mkdir(parents=True, exist_ok=True)
+resultat = analyser_clients(clients_ab, clients_ap)
 
-    with sortie.open("w", encoding="utf-8") as fichier:
-        json.dump(resultat, fichier, ensure_ascii=False, indent=2)
+sortie = Path(fichier_sortie)
+sortie.parent.mkdir(parents=True, exist_ok=True)
 
-    return len(resultat)
+with sortie.open("w", encoding="utf-8") as fichier:
+    json.dump(resultat, fichier, ensure_ascii=False, indent=2)
+
+return len(resultat["clients"])
+
+
