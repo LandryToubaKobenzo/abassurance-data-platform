@@ -60,9 +60,16 @@ def test_executer_pipeline(tmp_path):
     assert sortie.exists()
 
     resultat = json.loads(sortie.read_text(encoding="utf-8"))
-    assert len(resultat) == 2
-    assert resultat[0]["identifiant_source"] == "1"
-    assert resultat[1]["identifiant_source"] == "2"
+
+    assert set(resultat) == {
+        "clients",
+        "correspondances_candidates",
+    }
+
+    assert len(resultat["clients"]) == 2
+    assert resultat["clients"][0]["identifiant_source"] == "1"
+    assert resultat["clients"][1]["identifiant_source"] == "2"
+    assert isinstance(resultat["correspondances_candidates"], list)
 
 
 def test_rejeter_source_non_liste(tmp_path):
@@ -77,6 +84,7 @@ def test_rejeter_source_non_liste(tmp_path):
         executer_pipeline(source_ab, source_ap, sortie)
 
     assert not sortie.exists()
+
 
 def test_analyser_clients_detecte_correspondance():
     """Détecte un rapprochement candidat entre deux sources distinctes."""
