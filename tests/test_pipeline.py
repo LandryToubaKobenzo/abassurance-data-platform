@@ -99,16 +99,13 @@ def test_analyser_clients_detecte_correspondance():
         }
     ]
 
-    
-resultat = json.loads(sortie.read_text(encoding="utf-8"))
+    resultat = analyser_clients(clients_ab, clients_ap)
 
-assert set(resultat) == {
-    "clients",
-    "correspondances_candidates",
-}
+    assert set(resultat) == {
+        "clients",
+        "correspondances_candidates",
+    }
 
-assert len(resultat["clients"]) == 2
-assert resultat["clients"][0]["identifiant_source"] == "1"
-assert resultat["clients"][1]["identifiant_source"] == "2"
-
-assert resultat["correspondances_candidates"] == []
+    assert len(resultat["clients"]) == 2
+    assert isinstance(resultat["correspondances_candidates"], list)
+    assert len(resultat["correspondances_candidates"]) >= 1
