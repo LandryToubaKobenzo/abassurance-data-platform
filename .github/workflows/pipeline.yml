@@ -62,6 +62,18 @@ jobs:
             htmlcov/
           if-no-files-found: warn
 
+      - name: Execute customer unification pipeline
+        env:
+          PYTHONPATH: src
+        run: python scripts/run_pipeline.py
+
+      - name: Upload unified customer data
+        uses: actions/upload-artifact@v4
+        with:
+          name: clients-unifies
+          path: data/processed/clients_unifies.json
+          if-no-files-found: error
+
       - name: SonarQube Cloud Scan
         if: ${{ env.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarqube-scan-action@v6
