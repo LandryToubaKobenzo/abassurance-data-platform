@@ -7,6 +7,8 @@ from pathlib import Path
 from abassurance.normalisation import (
     normaliser_client_ab,
     normaliser_client_ap,
+
+from abassurance.rapprochement import detecter_correspondances
 )
 
 
@@ -14,6 +16,16 @@ def unifier_clients(clients_ab, clients_ap):
     """Normalise les sources en conservant leurs identifiants historiques."""
     resultat = []
 
+    def analyser_clients(clients_ab, clients_ap):
+    """Normalise les clients et détecte les correspondances candidates."""
+    clients = unifier_clients(clients_ab, clients_ap)
+    correspondances = detecter_correspondances(clients)
+
+    return {
+        "clients": clients,
+        "correspondances_candidates": correspondances,
+    }
+    
     for client in clients_ab:
         resultat.append(normaliser_client_ab(client))
 
