@@ -32,7 +32,7 @@ def executer_pipeline(fichier_ab, fichier_ap, fichier_sortie):
         clients_ap = json.load(fichier)
 
     if not isinstance(clients_ab, list) or not isinstance(clients_ap, list):
-        raise ValueError("Les fichiers sources doivent contenir des listes JSON.")
+        raise TypeError("Les fichiers sources doivent contenir des listes JSON.")
 
     resultat = unifier_clients(clients_ab, clients_ap)
 
