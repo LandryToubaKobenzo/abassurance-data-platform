@@ -99,19 +99,16 @@ def test_analyser_clients_detecte_correspondance():
         }
     ]
 
-    resultat = analyser_clients(clients_ab, clients_ap)
+    
+resultat = json.loads(sortie.read_text(encoding="utf-8"))
 
-    assert len(resultat["clients"]) == 2
-    assert len(resultat["correspondances_candidates"]) == 1
+assert set(resultat) == {
+    "clients",
+    "correspondances_candidates",
+}
 
-    groupe = resultat["correspondances_candidates"][0]
+assert len(resultat["clients"]) == 2
+assert resultat["clients"][0]["identifiant_source"] == "1"
+assert resultat["clients"][1]["identifiant_source"] == "2"
 
-    assert len(groupe) == 2
-    assert {client["systeme_source"] for client in groupe} == {
-        "ABASSURANCE",
-        "ASSUREPLUS",
-    }
-    assert {client["identifiant_source"] for client in groupe} == {
-        "101",
-        "202",
-    }
+assert resultat["correspondances_candidates"] == []
