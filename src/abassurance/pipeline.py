@@ -36,7 +36,7 @@ def analyser_clients(clients_ab, clients_ap):
 
 
 def executer_pipeline(fichier_ab, fichier_ap, fichier_sortie):
-    """Lit deux fichiers JSON et écrit les clients normalisés."""
+    """Lit deux fichiers JSON et exporte l'analyse structurée des clients."""
     with open(fichier_ab, encoding="utf-8") as fichier:
         clients_ab = json.load(fichier)
 
@@ -46,16 +46,12 @@ def executer_pipeline(fichier_ab, fichier_ap, fichier_sortie):
     if not isinstance(clients_ab, list) or not isinstance(clients_ap, list):
         raise TypeError("Les fichiers sources doivent contenir des listes JSON.")
 
-    
+    resultat = analyser_clients(clients_ab, clients_ap)
 
-resultat = analyser_clients(clients_ab, clients_ap)
+    sortie = Path(fichier_sortie)
+    sortie.parent.mkdir(parents=True, exist_ok=True)
 
-sortie = Path(fichier_sortie)
-sortie.parent.mkdir(parents=True, exist_ok=True)
+    with sortie.open("w", encoding="utf-8") as fichier:
+        json.dump(resultat, fichier, ensure_ascii=False, indent=2)
 
-with sortie.open("w", encoding="utf-8") as fichier:
-    json.dump(resultat, fichier, ensure_ascii=False, indent=2)
-
-return len(resultat["clients"])
-
-
+    return len(resultat["clients"])
