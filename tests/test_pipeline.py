@@ -3,7 +3,11 @@ import json
 
 import pytest
 
-from abassurance.pipeline import executer_pipeline, unifier_clients
+from abassurance.pipeline import (
+    analyser_clients,
+    executer_pipeline,
+    unifier_clients,
+)
 
 
 def test_unifier_clients():
@@ -73,3 +77,41 @@ def test_rejeter_source_non_liste(tmp_path):
         executer_pipeline(source_ab, source_ap, sortie)
 
     assert not sortie.exists()
+
+def test_analyser_clients_detecte_correspondance():
+    """Détecte un rapprochement candidat entre deux sources distinctes."""
+    clients_ab = [
+        {
+            "AB_CLIENT_ID": 101,
+            "AB_NOM": "Dupont",
+            "AB_PRENOM": "Jean",
+            "AB_EMAIL": "JEAN@EXEMPLE.FR",
+            "AB_DATE_NAISSANCE": "1990-05-12",
+        }
+    ]
+
+    clients_ap = [
+        {
+            "AP_USER_ID": 202,
+            "AP_FULL_NAME": "Jean Dupont",
+            "AP_MAIL_ADDRESS": "jean@exemple.fr",
+            "AP_BIRTH_DATE": "1990-05-12",
+        }
+    ]
+
+    resultat = analyser_clients(clients_ab, clients_ap)
+
+    assert len(resultat["clients"]) == 2
+    assert len(resultat["correspondances_candidates"]) == 1
+
+    groupe = resultat["correspondances_candidates"][0]
+
+    assert len(groupe) == 2
+    assert {client["systeme_source"] for client in groupe} == {
+        "ABASSURANCE",
+        "ASSUREPLUS",
+    }
+    assert {client["identifiant_source"] for client in groupe} == {
+        "101",
+        "202",
+    }
