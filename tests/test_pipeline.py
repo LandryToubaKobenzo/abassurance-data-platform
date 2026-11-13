@@ -69,7 +69,7 @@ def test_rejeter_source_non_liste(tmp_path):
     source_ab.write_text("{}", encoding="utf-8")
     source_ap.write_text("[]", encoding="utf-8")
 
-    with pytest.raises(ValueError, match="listes JSON"):
+    with pytest.raises(TypeError, match="listes JSON"):
         executer_pipeline(source_ab, source_ap, sortie)
 
     assert not sortie.exists()
