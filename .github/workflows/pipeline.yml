@@ -1,3 +1,4 @@
+
 name: AbAssurance - CI and Data Pipeline
 
 on:
@@ -8,16 +9,19 @@ on:
       - feature/sonarqube-integration
   pull_request:
     branches:
-      - develop
       - main
+      - develop
   workflow_dispatch:
 
 permissions:
   contents: read
 
+env:
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 jobs:
   quality:
-    name: Python Quality and SonarQube
+    name: Python Quality, Spark and SonarQube
     runs-on: ubuntu-latest
 
     steps:
@@ -31,27 +35,29 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Setup Java for Spark
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e .
-          pip install pytest pytest-cov ruff
+          python -m pip install -e .
+          python -m pip install pytest pytest-cov ruff
+          python -m pip install "pyspark==3.5.6"
 
       - name: Ruff code quality
-        run: ruff check src tests
+        run: python -m ruff check src tests scripts
 
       - name: Unit tests and coverage
         run: |
-          pytest tests/ \
+          python -m pytest tests/ -v \
             --cov=abassurance \
             --cov-report=term-missing \
             --cov-report=xml:coverage.xml \
             --cov-report=html:htmlcov
-
-      - name: SonarQube Cloud Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Upload coverage report
         if: always()
@@ -62,3 +68,25 @@ jobs:
             coverage.xml
             htmlcov/
           if-no-files-found: warn
+
+      - name: Execute customer unification pipeline
+        env:
+          PYTHONPATH: src
+        run: python scripts/run_pipeline.py
+
+      - name: Upload unified customer data
+        uses: actions/upload-artifact@v4
+        with:
+          name: clients-unifies
+          path: data/processed/clients_unifies.json
+          if-no-files-found: error
+
+      - name: Execute Apache Spark demonstration
+        run: python scripts/run_spark.py
+
+      - name: SonarQube Cloud Scan
+        if: ${{ env.SONAR_TOKEN != '' }}
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: false

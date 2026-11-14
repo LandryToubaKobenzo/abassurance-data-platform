@@ -1,0 +1,27 @@
+
+[
+  {
+    "AP_USER_ID": 201,
+    "AP_FULL_NAME": "Jean Dupont",
+    "AP_BIRTH_DATE": "1990-05-12",
+    "AP_MAIL_ADDRESS": "jean.dupont@exemple.fr",
+    "AP_PHONE_NUMBER": "0612345678",
+    "AP_STREET_ADDRESS": "12 rue des Lilas",
+    "AP_ZIP_CODE": "75001",
+    "AP_CREATED_AT": "2024-03-15T10:30:00",
+    "AP_CUSTOMER_STATUS": "ACTIVE",
+    "AP_LOYALTY_SCORE": 85
+  },
+  {
+    "AP_USER_ID": 202,
+    "AP_FULL_NAME": "Marie Bernard",
+    "AP_BIRTH_DATE": "1992-11-03",
+    "AP_MAIL_ADDRESS": "marie.bernard@exemple.fr",
+    "AP_PHONE_NUMBER": "0677889900",
+    "AP_STREET_ADDRESS": "5 boulevard Voltaire",
+    "AP_ZIP_CODE": "75011",
+    "AP_CREATED_AT": "2024-04-10T14:20:00",
+    "AP_CUSTOMER_STATUS": "ACTIVE",
+    "AP_LOYALTY_SCORE": 72
+  }
+]
