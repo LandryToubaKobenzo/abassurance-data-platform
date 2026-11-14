@@ -15,10 +15,10 @@ on:
 
 permissions:
   contents: read
-  
+
 env:
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  
+
 jobs:
   quality:
     name: Python Quality and SonarQube
@@ -39,7 +39,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .
-          python -m pip install pytest pytest-cov ruff
+          python -m pip install pytest pytest-cov ruff scikit-learn
 
       - name: Ruff code quality
         run: python -m ruff check src tests
@@ -73,6 +73,9 @@ jobs:
           name: clients-unifies
           path: data/processed/clients_unifies.json
           if-no-files-found: error
+
+      - name: Execute AI prediction prototype
+        run: python -m abassurance.prediction
 
       - name: SonarQube Cloud Scan
         if: ${{ env.SONAR_TOKEN != '' }}
