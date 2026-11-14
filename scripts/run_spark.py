@@ -21,7 +21,7 @@ def main():
     elif isinstance(contenu, dict):
         clients = contenu.get("clients", [])
     else:
-        raise ValueError("Format JSON inattendu")
+        raise TypeError("Format JSON inattendu")
 
     spark = (
         SparkSession.builder
