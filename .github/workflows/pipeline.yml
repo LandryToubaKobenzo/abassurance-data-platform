@@ -21,7 +21,7 @@ env:
 
 jobs:
   quality:
-    name: Python Quality and SonarQube
+    name: Python Quality, Spark and SonarQube
     runs-on: ubuntu-latest
 
     steps:
@@ -35,14 +35,21 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Setup Java for Spark
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .
-          python -m pip install pytest pytest-cov ruff scikit-learn
+          python -m pip install pytest pytest-cov ruff
+          python -m pip install "pyspark==3.5.6"
 
       - name: Ruff code quality
-        run: python -m ruff check src tests
+        run: python -m ruff check src tests scripts
 
       - name: Unit tests and coverage
         run: |
@@ -74,8 +81,8 @@ jobs:
           path: data/processed/clients_unifies.json
           if-no-files-found: error
 
-      - name: Execute AI prediction prototype
-        run: python -m abassurance.prediction
+      - name: Execute Apache Spark demonstration
+        run: python scripts/run_spark.py
 
       - name: SonarQube Cloud Scan
         if: ${{ env.SONAR_TOKEN != '' }}
