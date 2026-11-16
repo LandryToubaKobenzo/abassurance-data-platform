@@ -111,14 +111,22 @@ st.markdown(
 
 st.header("📋 Limites de la démonstration")
 
-st.caption(
-    "Les données utilisées sont fictives. Le modèle "
-    "est entraîné sur dix observations synthétiques "
-    "et n'a pas fait l'objet d'une évaluation statistique. "
-    "Il ne doit pas être utilisé pour prendre des décisions "
-    "réelles concernant des assurés. Les composants "
-    "Talend, Kafka et Hadoop relèvent de l'architecture "
-    "cible et ne sont pas déployés dans ce prototype."
+st.markdown(
+    """
+    Les données utilisées sont entièrement fictives. Le modèle de classification
+    est entraîné sur 300 observations synthétiques reproductibles, dont 240 pour
+    l'entraînement et 60 pour le test. Une évaluation technique a été réalisée
+    à l'aide des métriques accuracy, précision, rappel, F1-score et matrice
+    de confusion.
+
+    Les résultats obtenus sur ces données artificielles ne permettent pas de
+    conclure à une performance équivalente sur des données réelles. Ce prototype
+    ne doit pas être utilisé pour prendre des décisions concernant des assurés.
+
+    Les composants Talend, Kafka et Hadoop relèvent de l'architecture cible
+    et ne sont pas déployés dans cette démonstration.
+    """
+)
 )
 
 st.divider()
