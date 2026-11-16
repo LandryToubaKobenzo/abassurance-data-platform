@@ -1,0 +1,47 @@
+
+name: Entrainement et evaluation IA
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "scripts/generer_dataset_ia.py"
+      - "scripts/entrainer_modele_ia.py"
+      - "requirements.txt"
+      - ".github/workflows/entrainement-ia.yml"
+  workflow_dispatch:
+
+jobs:
+  entrainer-modele:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le depot
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Installer les dependances
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Generer les donnees synthetiques
+        run: python scripts/generer_dataset_ia.py
+
+      - name: Entrainer et evaluer le modele
+        run: python scripts/entrainer_modele_ia.py
+
+      - name: Conserver le modele et les metriques
+        uses: actions/upload-artifact@v4
+        with:
+          name: modele-ia-et-metriques
+          path: |
+            models/modele_risque.joblib
+            models/metriques_modele.json
+          if-no-files-found: error
