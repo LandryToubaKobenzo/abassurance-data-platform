@@ -1,43 +1,43 @@
 
-"""Prototype pédagogique de prédiction du risque de sinistre."""
+"""Prédiction pédagogique du risque de sinistre à partir d'un modèle sauvegardé."""
 
-from sklearn.tree import DecisionTreeClassifier
+from functools import lru_cache
+from pathlib import Path
+
+import joblib
+
+RACINE_PROJET = Path(__file__).resolve().parents[2]
+CHEMIN_MODELE = RACINE_PROJET / "models" / "modele_risque.joblib"
 
 
-def entrainer_modele():
-    """Entraîne un modèle sur des exemples synthétiques."""
+@lru_cache(maxsize=1)
+def charger_modele():
+    """Charge une seule fois le modèle entraîné et sauvegardé."""
+    if not CHEMIN_MODELE.is_file():
+        raise FileNotFoundError(
+            "Modèle introuvable. Exécutez d'abord le script "
+            "d'entraînement pour créer models/modele_risque.joblib."
+        )
 
-    # [âge, nombre de sinistres précédents, ancienneté du contrat]
-    caracteristiques = [
-        [25, 0, 2],
-        [42, 0, 10],
-        [35, 1, 5],
-        [55, 3, 8],
-        [29, 2, 1],
-        [48, 0, 15],
-        [62, 4, 3],
-        [31, 0, 6],
-        [45, 2, 4],
-        [38, 1, 9],
-    ]
-
-    # 0 = risque faible ; 1 = risque élevé
-    etiquettes = [0, 0, 0, 1, 1, 0, 1, 0, 1, 0]
-
-    modele = DecisionTreeClassifier(max_depth=3, random_state=42)
-    modele.fit(caracteristiques, etiquettes)
-    return modele
+    return joblib.load(CHEMIN_MODELE)
 
 
 def predire_risque(age, sinistres_precedents, anciennete_contrat):
-    """Prédit une catégorie de risque à partir de trois variables."""
+    """Prédit le risque sans réentraîner le modèle."""
 
-    modele = entrainer_modele()
+    if not 18 <= age <= 100:
+        raise ValueError("L'âge doit être compris entre 18 et 100.")
+    if not 0 <= sinistres_precedents <= 20:
+        raise ValueError("Le nombre de sinistres doit être compris entre 0 et 20.")
+    if not 0 <= anciennete_contrat <= 80:
+        raise ValueError("L'ancienneté doit être comprise entre 0 et 80.")
+
+    modele = charger_modele()
     prediction = modele.predict(
         [[age, sinistres_precedents, anciennete_contrat]]
     )[0]
 
-    return "Élevé" if prediction == 1 else "Faible"
+    return "Élevé" if int(prediction) == 1 else "Faible"
 
 
 if __name__ == "__main__":
