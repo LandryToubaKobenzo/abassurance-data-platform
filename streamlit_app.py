@@ -127,7 +127,6 @@ st.markdown(
     et ne sont pas déployés dans cette démonstration.
     """
 )
-)
 
 st.divider()
 
