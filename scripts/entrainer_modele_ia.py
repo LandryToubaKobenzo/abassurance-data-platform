@@ -17,7 +17,6 @@ from sklearn.metrics import (
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
-
 RACINE = Path(__file__).resolve().parents[1]
 DATASET = RACINE / "data" / "processed" / "risques_synthetiques.csv"
 MODELE = RACINE / "models" / "modele_risque.joblib"
@@ -80,9 +79,9 @@ def entrainer():
     predictions = modele.predict(x_test)
 
     resultats = {
-        "observations_total": int(len(donnees)),
-        "observations_entrainement": int(len(x_train)),
-        "observations_test": int(len(x_test)),
+        "observations_total": len(donnees),
+        "observations_entrainement": len(x_train),
+        "observations_test": len(x_test),
         "accuracy": float(accuracy_score(y_test, predictions)),
         "precision": float(
             precision_score(y_test, predictions, zero_division=0)
