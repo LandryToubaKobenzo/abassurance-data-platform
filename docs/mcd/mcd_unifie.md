@@ -348,3 +348,29 @@ Les prochaines étapes sont :
 - construction du modèle logique de données (MLD) ;
 - définition du dictionnaire de données ;
 - préparation des traitements d'intégration Big Data.
+  
+### Diagramme conceptuel complémentaire — Cas d'usage IA
+
+```mermaid
+erDiagram
+    CAS_USAGE_IA {
+        string id_cas_usage
+        string code_cas_usage
+        string description
+    }
+    FEATURE_IA {
+        string id_feature
+        string nom_feature
+        string definition
+        string provenance
+    }
+    PREDICTION_IA {
+        string id_prediction
+        datetime date_prediction
+        string valeur_predite
+        string version_modele
+    }
+    CAS_USAGE_IA ||--|{ FEATURE_IA : UTILISER_FEATURE
+    CAS_USAGE_IA ||--o{ PREDICTION_IA : PRODUIRE_PREDICTION
+```
+
