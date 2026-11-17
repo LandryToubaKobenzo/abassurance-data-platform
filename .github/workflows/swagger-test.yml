@@ -1,0 +1,66 @@
+name: Verification Swagger FastAPI
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  swagger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install fastapi httpx
+
+      - name: Verify Swagger and API endpoints
+        run: |
+          python - <<'PY'
+          from fastapi.testclient import TestClient
+          from abassurance.api import app
+
+          client = TestClient(app)
+
+          docs = client.get("/docs")
+          assert docs.status_code == 200
+          assert "swagger-ui" in docs.text.lower()
+
+          schema = client.get("/openapi.json")
+          assert schema.status_code == 200
+          paths = schema.json()["paths"]
+          assert "/health" in paths
+          assert "/predict" in paths
+
+          health = client.get("/health")
+          assert health.status_code == 200
+
+          prediction = client.post(
+              "/predict",
+              json={
+                  "age": 51,
+                  "sinistres_precedents": 6,
+                  "anciennete_contrat": 3,
+              },
+          )
+          assert prediction.status_code == 200
+          assert prediction.json()["risque_predit"] in ["Faible", "Élevé"]
+
+          print("Swagger : OK")
+          print("OpenAPI : OK")
+          print("Health : OK")
+          print("Prediction : OK")
+          PY
