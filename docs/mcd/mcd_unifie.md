@@ -1,4 +1,3 @@
-
 # MCD unifié — AbAssurance et AssurePlus
 
 ## 1. Objectif
@@ -6,7 +5,19 @@
 Concevoir un modèle conceptuel de données (MCD) commun à deux compagnies d'assurance :
 
 - AbAssurance : base Oracle.
-- AssurePlus : base SQL Server. 
+- AssurePlus : base SQL Server.
+
+Le modèle doit permettre :
+- l'unification des informations clients ;
+- la conservation des identifiants historiques ;
+- la détection des clients potentiellement identiques ;
+- la gestion des contrats, sinistres et paiements ;
+- la représentation commune des agences et courtiers ;
+- la traçabilité des données d'origine.
+
+Le MCD décrit les règles métier. Les clés étrangères et les types SQL détaillés relèvent du futur modèle logique de données (MLD).
+
+
 
 ## 2. Entités et attributs
 
@@ -285,25 +296,6 @@ Les prochaines étapes sont :
 - construction du modèle logique de données (MLD) ;
 - définition du dictionnaire de données ;
 - préparation des traitements d'intégration Big Data.
-  
-### Diagramme conceptuel complémentaire — Cas d'usage IA
-
-```mermaid
-erDiagram
-    CAS_USAGE_IA {
-        string id_cas_usage
-        string code_cas_usage
-        string description
-    }
-    FEATURE_IA {
-        string id_feature
-        string nom_feature
-        string definition
-        string provenance
-    }
-    PREDICTION_IA {
-        string id_prediction
-        datetime date_prediction
 
 ## 10. Extension du MCD — Cas d'usage IA et features
 
@@ -358,19 +350,27 @@ Le rattachement des prédictions aux entités CLIENT, CONTRAT ou SINISTRE dépen
 
 Le prototype pédagogique comprend un modèle de scoring du risque sur données synthétiques, un modèle sauvegardé et une API FastAPI de prédiction testée dans Swagger. La fraude et la résiliation sont ici des cas d'usage envisagés, non des modèles opérationnels. Les données réelles Oracle et SQL Server ne sont pas intégrées au prototype.
 
-Le modèle doit permettre :
-- l'unification des informations clients ;
-- la conservation des identifiants historiques ;
-- la détection des clients potentiellement identiques ;
-- la gestion des contrats, sinistres et paiements ;
-- la représentation commune des agences et courtiers ;
-- la traçabilité des données d'origine.
+### Diagramme conceptuel complémentaire — Cas d'usage IA
 
-Le MCD décrit les règles métier. Les clés étrangères et les types SQL détaillés relèvent du futur modèle logique de données (MLD).
+```mermaid
+erDiagram
+    CAS_USAGE_IA {
+        string id_cas_usage
+        string code_cas_usage
+        string description
+    }
+    FEATURE_IA {
+        string id_feature
+        string nom_feature
+        string definition
+        string provenance
+    }
+    PREDICTION_IA {
+        string id_prediction
+        datetime date_prediction
         string valeur_predite
         string version_modele
     }
     CAS_USAGE_IA ||--|{ FEATURE_IA : UTILISER_FEATURE
     CAS_USAGE_IA ||--o{ PREDICTION_IA : PRODUIRE_PREDICTION
 ```
-
