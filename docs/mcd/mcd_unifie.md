@@ -6,70 +6,7 @@
 Concevoir un modèle conceptuel de données (MCD) commun à deux compagnies d'assurance :
 
 - AbAssurance : base Oracle.
-- AssurePlus : base SQL Server.
-  
-## 10. Extension du MCD — Cas d'usage IA et features
-
-Cette extension décrit les données nécessaires aux cas d'usage IA envisagés : détection de fraude, prédiction de résiliation et scoring du risque. Elle représente une architecture cible et ne signifie pas que les trois modèles sont déjà développés.
-
-### CAS_USAGE_IA
-
-| Attribut | Description |
-|---|---|
-| id_cas_usage | Identifiant du cas d'usage |
-| code_cas_usage | FRAUDE, RESILIATION ou SCORING_RISQUE |
-| description | Objectif métier de la prédiction |
-
-### FEATURE_IA
-
-| Attribut | Description |
-|---|---|
-| id_feature | Identifiant de la variable |
-| nom_feature | Nom de la variable utilisée par un modèle |
-| definition | Définition métier et règle éventuelle de calcul |
-| provenance | Donnée source, donnée calculée ou donnée synthétique |
-
-Une feature est rattachée à un cas d'usage IA. Un cas d'usage peut exploiter plusieurs features.
-
-### PREDICTION_IA
-
-| Attribut | Description |
-|---|---|
-| id_prediction | Identifiant de la prédiction |
-| date_prediction | Date de production du résultat |
-| valeur_predite | Classe ou valeur produite par le modèle |
-| version_modele | Version du modèle utilisé |
-
-Une prédiction appartient à un cas d'usage IA et concerne un objet métier identifié (client, contrat ou sinistre selon le cas). La cible exacte et les cardinalités restent à valider.
-
-### Features par cas d'usage
-
-- **Fraude** : informations relatives aux sinistres et à leur historique. Le score_fraude existant dans SINISTRE est une donnée source et ne doit pas être confondu avec une nouvelle prédiction.
-- **Résiliation** : caractéristiques du client, du contrat et de son historique. Ce cas d'usage reste à concevoir.
-- **Scoring du risque** : âge, nombre de sinistres précédents et ancienneté du contrat, utilisés dans le prototype pédagogique actuel. Leur disponibilité réelle dans les systèmes sources reste à vérifier.
-
-### Associations conceptuelles proposées
-
-| Association | Cardinalités proposées | Signification |
-|---|---|---|
-| UTILISER_FEATURE | CAS_USAGE_IA (1,N) — FEATURE_IA (1,1) | Un cas d'usage définit les features qu'il utilise |
-| PRODUIRE_PREDICTION | CAS_USAGE_IA (0,N) — PREDICTION_IA (1,1) | Chaque prédiction correspond à un cas d'usage |
-
-Le rattachement des prédictions aux entités CLIENT, CONTRAT ou SINISTRE dépend du cas d'usage et doit être précisé avant le passage au MLD.
-
-### Périmètre de réalisation
-
-Le prototype pédagogique comprend un modèle de scoring du risque sur données synthétiques, un modèle sauvegardé et une API FastAPI de prédiction testée dans Swagger. La fraude et la résiliation sont ici des cas d'usage envisagés, non des modèles opérationnels. Les données réelles Oracle et SQL Server ne sont pas intégrées au prototype.
-
-Le modèle doit permettre :
-- l'unification des informations clients ;
-- la conservation des identifiants historiques ;
-- la détection des clients potentiellement identiques ;
-- la gestion des contrats, sinistres et paiements ;
-- la représentation commune des agences et courtiers ;
-- la traçabilité des données d'origine.
-
-Le MCD décrit les règles métier. Les clés étrangères et les types SQL détaillés relèvent du futur modèle logique de données (MLD).
+- AssurePlus : base SQL Server. 
 
 ## 2. Entités et attributs
 
@@ -367,6 +304,69 @@ erDiagram
     PREDICTION_IA {
         string id_prediction
         datetime date_prediction
+
+## 10. Extension du MCD — Cas d'usage IA et features
+
+Cette extension décrit les données nécessaires aux cas d'usage IA envisagés : détection de fraude, prédiction de résiliation et scoring du risque. Elle représente une architecture cible et ne signifie pas que les trois modèles sont déjà développés.
+
+### CAS_USAGE_IA
+
+| Attribut | Description |
+|---|---|
+| id_cas_usage | Identifiant du cas d'usage |
+| code_cas_usage | FRAUDE, RESILIATION ou SCORING_RISQUE |
+| description | Objectif métier de la prédiction |
+
+### FEATURE_IA
+
+| Attribut | Description |
+|---|---|
+| id_feature | Identifiant de la variable |
+| nom_feature | Nom de la variable utilisée par un modèle |
+| definition | Définition métier et règle éventuelle de calcul |
+| provenance | Donnée source, donnée calculée ou donnée synthétique |
+
+Une feature est rattachée à un cas d'usage IA. Un cas d'usage peut exploiter plusieurs features.
+
+### PREDICTION_IA
+
+| Attribut | Description |
+|---|---|
+| id_prediction | Identifiant de la prédiction |
+| date_prediction | Date de production du résultat |
+| valeur_predite | Classe ou valeur produite par le modèle |
+| version_modele | Version du modèle utilisé |
+
+Une prédiction appartient à un cas d'usage IA et concerne un objet métier identifié (client, contrat ou sinistre selon le cas). La cible exacte et les cardinalités restent à valider.
+
+### Features par cas d'usage
+
+- **Fraude** : informations relatives aux sinistres et à leur historique. Le score_fraude existant dans SINISTRE est une donnée source et ne doit pas être confondu avec une nouvelle prédiction.
+- **Résiliation** : caractéristiques du client, du contrat et de son historique. Ce cas d'usage reste à concevoir.
+- **Scoring du risque** : âge, nombre de sinistres précédents et ancienneté du contrat, utilisés dans le prototype pédagogique actuel. Leur disponibilité réelle dans les systèmes sources reste à vérifier.
+
+### Associations conceptuelles proposées
+
+| Association | Cardinalités proposées | Signification |
+|---|---|---|
+| UTILISER_FEATURE | CAS_USAGE_IA (1,N) — FEATURE_IA (1,1) | Un cas d'usage définit les features qu'il utilise |
+| PRODUIRE_PREDICTION | CAS_USAGE_IA (0,N) — PREDICTION_IA (1,1) | Chaque prédiction correspond à un cas d'usage |
+
+Le rattachement des prédictions aux entités CLIENT, CONTRAT ou SINISTRE dépend du cas d'usage et doit être précisé avant le passage au MLD.
+
+### Périmètre de réalisation
+
+Le prototype pédagogique comprend un modèle de scoring du risque sur données synthétiques, un modèle sauvegardé et une API FastAPI de prédiction testée dans Swagger. La fraude et la résiliation sont ici des cas d'usage envisagés, non des modèles opérationnels. Les données réelles Oracle et SQL Server ne sont pas intégrées au prototype.
+
+Le modèle doit permettre :
+- l'unification des informations clients ;
+- la conservation des identifiants historiques ;
+- la détection des clients potentiellement identiques ;
+- la gestion des contrats, sinistres et paiements ;
+- la représentation commune des agences et courtiers ;
+- la traçabilité des données d'origine.
+
+Le MCD décrit les règles métier. Les clés étrangères et les types SQL détaillés relèvent du futur modèle logique de données (MLD).
         string valeur_predite
         string version_modele
     }
