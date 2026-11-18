@@ -1,0 +1,16 @@
+[
+  {
+    "AP_USER_ID": 501,
+    "AP_FULL_NAME": "Jean Dupont",
+    "AP_BIRTH_DATE": "1990-05-12",
+    "AP_MAIL_ADDRESS": "jean.dupont@exemple.fr",
+    "AP_PHONE_NUMBER": "06 12 34 56 78"
+  },
+  {
+    "AP_USER_ID": 502,
+    "AP_FULL_NAME": "Sophie Martin",
+    "AP_BIRTH_DATE": "1985-08-20",
+    "AP_MAIL_ADDRESS": "SOPHIE.MARTIN@EXEMPLE.FR",
+    "AP_PHONE_NUMBER": "0698765432"
+  }
+]

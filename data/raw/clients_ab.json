@@ -1,0 +1,27 @@
+
+[
+  {
+    "AB_CLIENT_ID": 101,
+    "AB_NOM": "Dupont",
+    "AB_PRENOM": "Jean",
+    "AB_DATE_NAISSANCE": "1990-05-12",
+    "AB_EMAIL": "JEAN.DUPONT@EXEMPLE.FR",
+    "AB_TELEPHONE": "0612345678",
+    "AB_ADRESSE": "12 rue des Lilas",
+    "AB_CODE_POSTAL": "75001",
+    "AB_NUM_FISCAL": "FISC101",
+    "AB_STATUT_CLIENT": "ACTIF"
+  },
+  {
+    "AB_CLIENT_ID": 102,
+    "AB_NOM": "Martin",
+    "AB_PRENOM": "Sophie",
+    "AB_DATE_NAISSANCE": "1985-08-20",
+    "AB_EMAIL": "sophie.martin@exemple.fr",
+    "AB_TELEPHONE": "0698765432",
+    "AB_ADRESSE": "8 avenue Victor Hugo",
+    "AB_CODE_POSTAL": "69002",
+    "AB_NUM_FISCAL": "FISC102",
+    "AB_STATUT_CLIENT": "ACTIF"
+  }
+]

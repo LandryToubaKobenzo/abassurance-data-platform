@@ -1,0 +1,35 @@
+name: Generer dataset IA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      - "scripts/generer_dataset_ia.py"
+      - ".github/workflows/generer-dataset-ia.yml"
+
+jobs:
+  generer-dataset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Recuperer le depot
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generer les donnees synthetiques
+        run: python scripts/generer_dataset_ia.py
+
+      - name: Verifier le fichier CSV
+        run: |
+          python -c "import csv; p='data/processed/risques_synthetiques.csv'; r=list(csv.DictReader(open(p, encoding='utf-8'))); assert len(r)==300, f'{len(r)} lignes au lieu de 300'; print(f'Dataset valide : {len(r)} observations')"
+
+      - name: Publier le dataset en artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dataset-ia-synthetique
+          path: data/processed/risques_synthetiques.csv
